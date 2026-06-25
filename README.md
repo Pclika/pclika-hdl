@@ -54,13 +54,25 @@ Experience Layer        →  examples / prompts / docs / constraint templates
 
 ---
 
-## First Supported Devices
+## Supported Hardware
 
-| Device | Family | Toolchain | Status |
-|--------|--------|-----------|--------|
-| iCE40UP5K | Lattice iCE40 | Yosys + nextpnr + iceprog | Phase 1 |
-| LFE5U-25F | Lattice ECP5 | Yosys + nextpnr + openFPGALoader | Phase 2 |
-| XC7Z010 | AMD Zynq-7000 | Yosys + Vivado (impl only) | Phase 3 |
+| Board | FPGA | Toolchain | Status |
+|-------|------|-----------|--------|
+| iCEBreaker v1.0 ★ | iCE40UP5K SG48 | Yosys + nextpnr + iceprog | Phase 1 — primary |
+| Upduino v3.1 | iCE40UP5K SG48 | Yosys + nextpnr + iceprog | Phase 1 — compatible |
+| iCE40-HX8K Breakout | iCE40HX8K CT256 | Yosys + nextpnr + iceprog | Phase 1 — partial |
+| ColorLight i5 | Lattice ECP5 LFE5U-25F | Yosys + nextpnr + openFPGALoader | Phase 2 |
+| Arty A7-35T | AMD Artix-7 XC7A35T | Yosys + Vivado (impl) | Phase 3 |
+
+**IP Library × Hardware mapping** → [`docs/hardware/hardware-list.md`](docs/hardware/hardware-list.md)
+
+| Interface | IP Module | Supported Hardware |
+|-----------|-----------|-------------------|
+| UART 8N1 | `pclika_uart_rx` + `pclika_uart_tx` | iCEBreaker (FT2232H), Upduino (CH340), any PMOD-UART |
+| SPI Master (Mode 0) | `pclika_spi_master` | W25Q128 Flash, BME280, MAX31865, SSD1309, ST7789 |
+| PWM / Servo 50 Hz | `pclika_pwm` | SG90 / MG996R servos, ESC, RGB LED dimming |
+| I2C Master | `pclika_i2c_master` | MPU6050, BMP280, SSD1306 I2C — *Phase 2* |
+| WS2812B | `pclika_ws2812` | Addressable RGB LED strips — *Phase 2* |
 
 ---
 
@@ -68,29 +80,4 @@ Experience Layer        →  examples / prompts / docs / constraint templates
 
 ```
 device_info         → FPGA target, package, speed grade, available resources
-synth_run           → trigger Yosys synthesis
-synth_status        → latest synthesis result, warnings, errors
-impl_run            → trigger nextpnr place & route
-impl_status         → P&R result, routing success/fail
-timing_report       → critical path, worst slack, clock domains
-resource_usage      → LUT / FF / BRAM / DSP utilization (used / total / %)
-sim_run             → trigger Verilator/GHDL simulation
-sim_result          → pass/fail, assertion count, log tail
-lint_report         → HDL lint warnings and errors
-constraint_validate → validate .pcf / .lpf / .xdc file
-bitstream_flash     → flash bitstream to connected FPGA via USB
-waveform_export     → export VCD/FST waveform snippet (last N cycles)
-```
-
----
-
-## Repository Layout
-
-```
-docs/
-  architecture/
-  toolchain/
-  devices/
-  software/
-hdl/
-  rtl/              ← synthesi
+synth_run      
