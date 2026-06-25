@@ -146,17 +146,10 @@ Early-stage open-source foundation. Current focus:
 
 ## License
 
-- Software: Apache-2.0
-- Hardware design files: CERN-OHL-S v2
-- Documentation: CC BY 4.0
+This repository uses different licenses for different components:
 
-See `LICENSE`, `HARDWARE_LICENSE.md`, `DOCS_LICENSE.md`
-
----
-
-## Part of the Pclika Ecosystem
-
-| Repository | Role |
-|------------|------|
-| [Pclika/mcp-platform](https://github.com/Pclika/mcp-platform) | MCU / Embedded MCP Platform (ESP32, STM32) |
-| [Pclika/pclika-hdl](https://github.com/Pclika/pclika-hdl) | FPGA / HDL AI Development Platform |
+| Component | License | Files |
+|-----------|---------|-------|
+| Software (bridge, scripts, configs) | [Apache-2.0](LICENSE) | `bridge/`, `toolchain/`, `configs/` |
+| RTL hardware designs | [CERN-OHL-S v2](HARDWARE_LICENSE.md) | `hdl/`, `examples/*/rtl/`, `examples/*/constraints/` |
+| Documentation & prompts | [CC BY 4.0](DOCS_LICENSE.md) | `docs/`, `prompts/`, `*.md` 
