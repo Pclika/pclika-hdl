@@ -16,6 +16,22 @@ Import this repository into Claude, Codex, Cursor, or OpenCode, and your AI tool
 
 ---
 
+## Project Description
+
+FPGA development has always carried an unusually high entry cost — not because logic design is inherently complex, but because the toolchain is. Vendor GUIs, proprietary constraint formats, opaque synthesis logs, and device-specific primitive libraries create a barrier that even experienced engineers spend weeks crossing before writing a single useful line of RTL.
+
+Pclika HDL is built on a different premise: **the toolchain should be transparent, and the AI should be the interface.**
+
+Rather than wrapping FPGA development inside another GUI, Pclika HDL exposes the entire open-source toolchain — Yosys for synthesis, nextpnr for place-and-route, Verilator for simulation — through a structured MCP bridge. This means an AI coding tool connected to `pclika-hdl-bridge` doesn't just generate Verilog: it can synthesize it, read the resource report, identify the critical path, fix the timing violation, and flash the bitstream — all without leaving the conversation.
+
+The first target is the **iCE40UP5K**, chosen deliberately. It has 5280 LUT4s, eight DSPs, a single PLL, and a fully open toolchain with no license dependency. It is small enough to understand completely, and real enough to build production-quality peripheral controllers on. The IP library starts here — UART, SPI, PWM — and grows outward toward ECP5 and eventually Zynq-class SoCs.
+
+The design philosophy follows three rules. First, every RTL module must be synthesizable with zero warnings on the first try — no simulation-only constructs, no magic numbers, no undeclared ports. Second, every example must produce a working bitstream, not just compile. Third, every MCP tool must return structured, parseable output — not log text — so AI tools can act on results rather than interpret them.
+
+This is not a synthesis framework. It is a **context layer**: the missing piece that lets AI tools reason about FPGA state the same way they reason about software — with full visibility into what the hardware is, what it is doing, and what it needs next.
+
+---
+
 ## What This Is
 
 A unified HDL AI development layer built around four ideas:
@@ -77,79 +93,4 @@ docs/
   devices/
   software/
 hdl/
-  rtl/              ← synthesizable RTL source
-  tb/               ← testbenches
-  constraints/      ← .pcf / .lpf / .xdc per device
-  ip/               ← reusable IP blocks
-bridge/
-  mcp-server/       ← Python MCP bridge for HDL toolchain
-  tool-schemas/     ← JSON Schema for all MCP tools
-toolchain/
-  scripts/          ← build / synth / impl / sim scripts
-  docker/           ← Docker image with full open toolchain
-examples/
-  blink/            ← LED blink on iCE40UP5K
-  uart-echo/        ← UART loopback example
-  i2c-controller/   ← I2C master implementation
-  spi-bridge/       ← SPI to UART bridge
-  pwm-gen/          ← Configurable PWM generator
-prompts/
-  common/
-  synth-workflow.md
-  timing-debug.md
-  rtl-review.md
-configs/
-  mcp/
-    claude-code.commands.md
-    cursor.mcp.json
-    codex.config.toml
-    vscode.mcp.json
-```
-
----
-
-## Start Here
-
-1. `README.md` — this file
-2. `AGENTS.md` — AI tool guide
-3. `docs/architecture/platform.md` — platform architecture
-4. `docs/toolchain/setup.md` — toolchain installation
-5. `examples/blink/` — first working example
-
----
-
-## Quick Start
-
-```bash
-# Install bridge
-pip install pclika-hdl-bridge
-
-# Connect your iCE40 board via USB
-pclika-hdl-bridge --device ice40up5k --port /dev/ttyUSB0
-
-# In Claude / Codex / Cursor — the following tools are now available:
-# device_info / synth_run / timing_report / resource_usage / bitstream_flash
-```
-
----
-
-## Repository Status
-
-Early-stage open-source foundation. Current focus:
-
-- toolchain integration architecture
-- MCP bridge contract definition
-- iCE40UP5K first device support
-- example project structure
-
----
-
-## License
-
-This repository uses different licenses for different components:
-
-| Component | License | Files |
-|-----------|---------|-------|
-| Software (bridge, scripts, configs) | [Apache-2.0](LICENSE) | `bridge/`, `toolchain/`, `configs/` |
-| RTL hardware designs | [CERN-OHL-S v2](HARDWARE_LICENSE.md) | `hdl/`, `examples/*/rtl/`, `examples/*/constraints/` |
-| Documentation & prompts | [CC BY 4.0](DOCS_LICENSE.md) | `docs/`, `prompts/`, `*.md` 
+  rtl/              ← synthesi
